@@ -18,3 +18,13 @@ CREATE TABLE IF NOT EXISTS `ims`.`item` (
     PRIMARY KEY (`id`)
 );
 
+CREATE TABLE IF NOT EXISTS `ims`.`orders` (
+	`id` INT NOT NULL AUTO_INCREMENT,
+    `fk_customer_id` INT NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY (`fk_customer_id`),
+    FOREIGN KEY (`fk_customer_id`) 
+		REFERENCES `item` (`id`) 
+			ON DELETE CASCADE
+);
+
