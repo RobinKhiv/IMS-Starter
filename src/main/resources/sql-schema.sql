@@ -28,3 +28,13 @@ CREATE TABLE IF NOT EXISTS `ims`.`orders` (
 			ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS `ims`.`order_items` (
+	`fk_order_id` INT NOT NULL,
+    `fk_item_id` INT NOT NULL,
+	PRIMARY KEY (`fk_order_id`, `fk_item_id`),
+    FOREIGN KEY (`fk_order_id`)
+		REFERENCES `orders` (`id`)
+			ON DELETE CASCADE,
+	FOREIGN KEY (`fk_item_id`)
+		REFERENCES `item` (`id`) 
+);
