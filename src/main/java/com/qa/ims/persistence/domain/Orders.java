@@ -1,21 +1,21 @@
 package com.qa.ims.persistence.domain;
 
-import java.util.Set;
+import java.util.List;
 
 public class Orders {
 	
 	private Long orderId;
 	private String customerName;
-	private Set<Item> orderItems;
+	private List<Item> orderItems;
 	
 	public Orders(String customer) {
 		this.setCustomerName(customer);
 	}
-	public Orders(Long orderId, Set<Item> items) {
+	public Orders(Long orderId, List<Item> items) {
 		this.setId(orderId);
 		this.setOrderItems(items);
 	}
-	public Orders(Long id, String customerName, Set<Item> items) {
+	public Orders(Long id, String customerName, List<Item> items) {
 		this.setId(id);
 		this.setCustomerName(customerName);
 		this.setOrderItems(items);
@@ -37,11 +37,11 @@ public class Orders {
 		orderItems.remove(item);
 	}
 	
-	public Set<Item> getOrderItems() {
+	public List<Item> getOrderItems() {
 		return orderItems;
 	}
 	
-	public void setOrderItems(Set<Item> items) {
+	public void setOrderItems(List<Item> items) {
 		this.orderItems = items;
 	}
 	
