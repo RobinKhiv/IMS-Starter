@@ -5,19 +5,19 @@ import java.util.List;
 public class Orders {
 	
 	private Long orderId;
-	private String customerName;
+	private Long customerId;
 	private List<Item> orderItems;
 	
-	public Orders(String customer) {
-		this.setCustomerName(customer);
+	public Orders(Long customer) {
+		this.setCustomerId(customer);
 	}
 	public Orders(Long orderId, List<Item> items) {
 		this.setId(orderId);
 		this.setOrderItems(items);
 	}
-	public Orders(Long id, String customerName, List<Item> items) {
+	public Orders(Long id, Long customerId, List<Item> items) {
 		this.setId(id);
-		this.setCustomerName(customerName);
+		this.setCustomerId(customerId);
 		this.setOrderItems(items);
 	}
 	
@@ -45,12 +45,12 @@ public class Orders {
 		this.orderItems = items;
 	}
 	
-	public String getName() {
-		return customerName;
+	public Long getCustomerId() {
+		return customerId;
 	}
 	
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
 	}
 	
 	@Override
@@ -63,7 +63,8 @@ public class Orders {
 		itemList = itemList.substring(0, itemList.length() - 2);
 		itemList+= " ]";
 				
-		return "Order Id:" + orderId + " Items:" + itemList;
+		return "Order Id:" + orderId + " CustomerId: " + customerId 
+				+ " Items:" + itemList;
 	}
 	public double getTotalCost() {
 		double total = 0d;
