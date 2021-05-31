@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.qa.ims.persistence.domain.Customer;
 import com.qa.ims.persistence.domain.Item;
 import com.qa.ims.persistence.domain.Orders;
 import com.qa.ims.utils.DBUtils;
@@ -34,7 +35,7 @@ public class OrdersDAO implements Dao<Orders>  {
 			do {
 				orders = modelFromResultSet(resultSet);
 				order.add(orders);
-			} while(resultSet.next()); 
+			} while(!resultSet.isAfterLast()); 
 				
 			return order;
 		} catch (SQLException e) {
@@ -65,10 +66,42 @@ public class OrdersDAO implements Dao<Orders>  {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public Orders readLatest() {
+		try (Connection connection = DBUtils.getInstance().getConnection();
+				Statement statement = connection.createStatement();
+				ResultSet resultSet = statement.executeQuery("SELECT * FROM orders ORDER BY id DESC LIMIT 1");) {
+			resultSet.next();
+			Long newOrderID = resultSet.getLong("id");
+			
+			return new Orders(newOrderID, new ArrayList<>());
+		} catch (Exception e) {
+			LOGGER.debug(e);
+			LOGGER.error(e.getMessage());
+		}
+		return null;
+	}
+
 
 	@Override
-	public Orders create(Orders t) {
-		// TODO Auto-generated method stub
+	public Orders create(Orders order) {
+		try (Connection connection = DBUtils.getInstance().getConnection();
+				PreparedStatement statement = connection.prepareStatement("INSERT INTO orders(fk_customer_id) VALUES(?)");
+				){
+			statement.setLong(1, order.getCustomerId());
+			statement.executeUpdate();
+			Orders latestOrder = readLatest();
+			try (
+				PreparedStatement itemStatement = connection.prepareStatement("INSERT INTO order_items(fk_order_id, fk_item_id) VALUES (?,?)");){
+				itemStatement.setLong(1, latestOrder.getId());
+				itemStatement.setLong(2, order.getFirstItemId());
+				itemStatement.executeUpdate();
+			}
+			return latestOrder;
+			
+		}catch (Exception e) {
+			LOGGER.debug(e);
+			LOGGER.error(e.getMessage());
+		}
 		return null;
 	}
 
@@ -92,22 +125,25 @@ public class OrdersDAO implements Dao<Orders>  {
 		Long currentCusID = 0l;
 		double item_price = 0d;
 		String item_name = "";
-		
+	
 		while (resultSet.next()) {
 			currentOrder = resultSet.getLong("order_id");
 			item_name = resultSet.getString("item_name");
 			item_price = resultSet.getDouble("item_price");
-			currentCusID = resultSet.getLong("fk_customer_id");
-
+			
 			if(currentOrderSaved == 0l)
 				currentOrderSaved = currentOrder;
-			else if(currentOrder != currentOrderSaved) 
+			
+			else if(currentOrder != currentOrderSaved) { 
+				resultSet.previous();
 				return new Orders(currentOrderSaved, currentCusID, itemSet);
-		
+			}
+			
+			currentCusID = resultSet.getLong("fk_customer_id");
 			itemSet.add(new Item(item_name, item_price));	
 		}
-		
-		if (currentOrder != 0l)
+
+		if (currentOrderSaved != 0l)
 			return new Orders(currentOrderSaved, currentCusID, itemSet);
 		else
 			return new Orders();
