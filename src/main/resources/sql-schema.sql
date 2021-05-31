@@ -22,19 +22,20 @@ CREATE TABLE IF NOT EXISTS `ims`.`orders` (
 	`id` INT NOT NULL AUTO_INCREMENT,
     `fk_customer_id` INT NOT NULL,
     PRIMARY KEY (`id`),
-    KEY (`fk_customer_id`),
     FOREIGN KEY (`fk_customer_id`) 
 		REFERENCES `item` (`id`) 
 			ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS `ims`.`order_items` (
+	`id` INTEGER NOT NULL AUTO_INCREMENT,
 	`fk_order_id` INT NOT NULL,
     `fk_item_id` INT NOT NULL,
-	PRIMARY KEY (`fk_order_id`, `fk_item_id`),
+	PRIMARY KEY (`id`),
     FOREIGN KEY (`fk_order_id`)
 		REFERENCES `orders` (`id`)
 			ON DELETE CASCADE,
 	FOREIGN KEY (`fk_item_id`)
 		REFERENCES `item` (`id`) 
+			ON DELETE CASCADE
 );

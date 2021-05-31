@@ -11,7 +11,10 @@ public class Orders {
 	public Orders(String customer) {
 		this.setCustomerName(customer);
 	}
-	
+	public Orders(Long orderId, Set<Item> items) {
+		this.setId(orderId);
+		this.setOrderItems(items);
+	}
 	public Orders(Long id, String customerName, Set<Item> items) {
 		this.setId(id);
 		this.setCustomerName(customerName);
