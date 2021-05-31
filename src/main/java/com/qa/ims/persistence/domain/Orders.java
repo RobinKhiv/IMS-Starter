@@ -63,7 +63,9 @@ public class Orders {
 		for(Item item: orderItems)
 			itemList = itemList + item.getItemName() + ", ";
 		
-		itemList = itemList.substring(0, itemList.length() - 2);
+		if(itemList.length() > 2)
+			itemList = itemList.substring(0, itemList.length() - 2);
+		
 		itemList+= " ]";
 				
 		return "Order Id:" + orderId + " CustomerId: " + customerId 
