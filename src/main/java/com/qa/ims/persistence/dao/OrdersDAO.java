@@ -1,13 +1,12 @@
 package com.qa.ims.persistence.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,39 +23,19 @@ public class OrdersDAO implements Dao<Orders>  {
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery("SELECT * from "
-						+ "(SELECT order_items.fk_order_id, order_items.fk_item_id, item.item_name, item.item_price  "
+						+ "(SELECT order_items.fk_order_id AS order_id, order_items.fk_item_id AS item_id, item.item_name, item.item_price  "
 						+ "FROM order_items JOIN item "
 						+ "ON order_items.fk_item_id = item.id) AS o  "
 						+ "JOIN orders "
-						+ "ON o.fk_order_id = orders.id ");) {
+						+ "ON o.order_id = orders.id");) {
 			Orders orders;
 			List<Orders> order = new ArrayList<Orders>();
-			List<Item> itemSet = new ArrayList<Item>();
-			double item_price = 0d;
-			String item_name = "";
-			Long currentOrder = 0l;
-			Long currentOrderSaved = 0l;
-			Long currentCusID = 0l;
-			
-			while (resultSet.next()) {
-				currentOrder = resultSet.getLong("fk_order_id");
-				item_name = resultSet.getString("item_name");
-				item_price = resultSet.getDouble("item_price");
-				currentCusID = resultSet.getLong("fk_customer_id");
-	
-				if(currentOrderSaved == 0l)
-					currentOrderSaved = currentOrder;
-				else if(currentOrder != currentOrderSaved) {
-					orders = new Orders(currentOrderSaved, currentCusID, itemSet);
-					order.add(orders);
-					itemSet.clear();
-				}
-				itemSet.add(new Item(item_name, item_price));	
-			}
-			if (currentOrder != 0l) {
-				orders = new Orders(currentOrderSaved, currentCusID, itemSet);
+		
+			do {
+				orders = modelFromResultSet(resultSet);
 				order.add(orders);
-			} 
+			} while(resultSet.next()); 
+				
 			return order;
 		} catch (SQLException e) {
 			LOGGER.debug(e);
@@ -67,6 +46,22 @@ public class OrdersDAO implements Dao<Orders>  {
 
 	@Override
 	public Orders read(Long id) {
+		try (Connection connection = DBUtils.getInstance().getConnection();
+				PreparedStatement statement = connection.prepareStatement("Select * from "
+						+ "(SELECT order_item.fk_order_id AS order_id, order_items.fk_item_id AS item_id, item.item_name, item.item_price "
+						+ "FROM order_items WHERE id = ? "
+						+ "JOIN item "
+						+ "ON order_items.fk_item_id = item.id) AS o "
+						+ "JOIN orders ON o.order_id = orders.id");){
+			statement.setLong(1,id);
+			ResultSet resultSet= statement.executeQuery();
+			
+			return modelFromResultSet(resultSet);
+			
+		} catch(Exception e) {
+			LOGGER.debug(e);
+			LOGGER.error(e.getMessage());
+		}
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -91,8 +86,31 @@ public class OrdersDAO implements Dao<Orders>  {
 
 	@Override
 	public Orders modelFromResultSet(ResultSet resultSet) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		List<Item> itemSet = new ArrayList<Item>();
+		Long currentOrder = 0l;
+		Long currentOrderSaved = 0l;
+		Long currentCusID = 0l;
+		double item_price = 0d;
+		String item_name = "";
+		
+		while (resultSet.next()) {
+			currentOrder = resultSet.getLong("order_id");
+			item_name = resultSet.getString("item_name");
+			item_price = resultSet.getDouble("item_price");
+			currentCusID = resultSet.getLong("fk_customer_id");
+
+			if(currentOrderSaved == 0l)
+				currentOrderSaved = currentOrder;
+			else if(currentOrder != currentOrderSaved) 
+				return new Orders(currentOrderSaved, currentCusID, itemSet);
+		
+			itemSet.add(new Item(item_name, item_price));	
+		}
+		
+		if (currentOrder != 0l)
+			return new Orders(currentOrderSaved, currentCusID, itemSet);
+		else
+			return new Orders();
 	}
 
 }
