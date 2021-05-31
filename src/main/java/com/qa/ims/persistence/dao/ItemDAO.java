@@ -1,38 +1,52 @@
 package com.qa.ims.persistence.dao;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.qa.ims.persistence.domain.Item;
+import com.qa.ims.utils.DBUtils;
 
 public class ItemDAO implements Dao<Item>{
 	
 	public static final Logger LOGGER = LogManager.getLogger();
 	
 	@Override
-	public List<item> readAll() {
+	public List<Item> readAll() {
+		try (Connection connection = DBUtils.getInstance().getConnection();
+				Statement statement = connection.createStatement();
+				ResultSet resultSet = statement.executeQuery("SELECT * FROM item");){
+			List<Item> items = new ArrayList<Item>();
+			while(resultSet.next())
+				items.add(modelFromResultSet(resultSet));
+			return items;
+		} catch (SQLException e) {
+			LOGGER.debug(e);
+			LOGGER.error(e.getMessage());
+		}
+		return new ArrayList<Item>();
+	}
+
+	@Override
+	public Item read(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public item read(Long id) {
+	public Item create(Item t) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public item create(item t) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public item update(item t) {
+	public Item update(Item t) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -43,11 +57,6 @@ public class ItemDAO implements Dao<Item>{
 		return 0;
 	}
 
-	@Override
-	public item modelFromResultSet(ResultSet resultSet) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public item read(Long id) {
@@ -68,9 +77,11 @@ public class ItemDAO implements Dao<Item>{
 	}
 
 	@Override
-	public item modelFromResultSet(ResultSet resultSet) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+	public Item modelFromResultSet(ResultSet resultSet) throws SQLException {
+		Long id = resultSet.getLong("id");
+		String item_name = resultSet.getString("item_name");
+		double item_price = resultSet.getBigDecimal("item_price").doubleValue();
+		return new Item(id, item_name, item_price);
 	}
 
 }

@@ -10,7 +10,7 @@ public class Item {
 		this.setItemPrice(itemPrice);
 	}
 	
-	public Item(String itemName, double itemPrice, Long id) {
+	public Item(Long id, String itemName, double itemPrice) {
 		this.setItemName(itemName);
 		this.setItemPrice(itemPrice);
 		this.setId(id);
@@ -38,6 +38,11 @@ public class Item {
 
 	public void setItemPrice(double itemPrice) {
 		this.itemPrice = itemPrice;
+	}
+	
+	@Override
+	public String toString() {
+		return "id:" + id + " item name:" + itemName + " price:$" + itemPrice;
 	}
 	
 }
