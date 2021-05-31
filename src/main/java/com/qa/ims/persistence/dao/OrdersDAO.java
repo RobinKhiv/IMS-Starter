@@ -24,8 +24,11 @@ public class OrdersDAO implements Dao<Orders>  {
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery("SELECT * from "
-						+ "(SELECT order_items.fk_order_id, order_items.fk_item_id, item.item_name, item.item_price  FROM order_items JOIN item ON order_items.fk_item_id = item.id) AS o  "
-						+ "JOIN orders ON o.fk_order_id = orders.id ");) {
+						+ "(SELECT order_items.fk_order_id, order_items.fk_item_id, item.item_name, item.item_price  "
+						+ "FROM order_items JOIN item "
+						+ "ON order_items.fk_item_id = item.id) AS o  "
+						+ "JOIN orders "
+						+ "ON o.fk_order_id = orders.id ");) {
 			Orders orders;
 			List<Orders> order = new ArrayList<Orders>();
 			List<Item> itemSet = new ArrayList<Item>();
