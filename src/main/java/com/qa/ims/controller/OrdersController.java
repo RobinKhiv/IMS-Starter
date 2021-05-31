@@ -23,8 +23,11 @@ public class OrdersController implements CrudController<Orders> {
 	}
 	@Override
 	public List<Orders> readAll() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Orders> orders = ordersDAO.readAll();
+		for(Orders order: orders){
+			LOGGER.info(order);
+		}
+		return orders;
 	}
 
 	@Override
