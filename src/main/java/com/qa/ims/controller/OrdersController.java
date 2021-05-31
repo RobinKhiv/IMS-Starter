@@ -32,8 +32,12 @@ public class OrdersController implements CrudController<Orders> {
 
 	@Override
 	public Orders create() {
-		// TODO Auto-generated method stub
-		return null;
+		LOGGER.info("Please enter a customer ID");
+		Long id = utils.getLong();
+		LOGGER.info("Please enter an Item ID to add to the order");
+		long itemId = utils.getLong();
+		Orders order = ordersDAO.create(new Orders(id, itemId));
+		return order;
 	}
 
 	@Override
