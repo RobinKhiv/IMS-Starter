@@ -15,6 +15,10 @@ public class Orders {
 	public Orders(Long customer) {
 		this(customer, new ArrayList<Item>());
 	}
+	public Orders(Long customerId, Long itemId) {
+		this(0l, customerId, new ArrayList<Item>());
+		this.addItem(new Item(itemId));
+	}
 	public Orders(Long orderId, List<Item> items) {
 		this(orderId, 0l, items);
 	}
