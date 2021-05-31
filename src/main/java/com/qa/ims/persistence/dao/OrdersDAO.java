@@ -53,8 +53,10 @@ public class OrdersDAO implements Dao<Orders>  {
 				}
 				itemSet.add(new Item(item_name, item_price));	
 			}
-			orders = new Orders(currentOrderSaved, currentCusID, itemSet);
-			order.add(orders);
+			if (currentOrder != 0l) {
+				orders = new Orders(currentOrderSaved, currentCusID, itemSet);
+				order.add(orders);
+			} 
 			return order;
 		} catch (SQLException e) {
 			LOGGER.debug(e);
