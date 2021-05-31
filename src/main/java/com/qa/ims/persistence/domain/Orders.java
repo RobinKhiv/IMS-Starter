@@ -82,7 +82,7 @@ public class Orders {
 		itemList+= " ]";
 				
 		return "Order Id:" + orderId + " CustomerId: " + customerId 
-				+ " Items:" + itemList;
+				+ " Items:" + itemList + " total: $" + this.getTotalCost();
 	}
 	public double getTotalCost() {
 		double total = 0d;
