@@ -5,9 +5,11 @@ public class Item {
 	private String itemName;
 	private double itemPrice;
 	
+	public Item(Long id) {
+		this(id," ", 0l);
+	}
 	public Item(String itemName, double itemPrice) {
-		this.setItemName(itemName);
-		this.setItemPrice(itemPrice);
+		this(0l, itemName, itemPrice);
 	}
 	
 	public Item(Long id, String itemName, double itemPrice) {
