@@ -62,4 +62,12 @@ public class Orders {
 				
 		return "Order Id:" + orderId + " Items:" + itemList;
 	}
+	public double getTotalCost() {
+		double total = 0d;
+		
+		for(Item item: orderItems)
+			total += item.getItemPrice();
+		
+		return total;
+	}
 }
