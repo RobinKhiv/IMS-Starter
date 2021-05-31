@@ -47,7 +47,16 @@ public class Orders {
 	public List<Item> getOrderItems() {
 		return orderItems;
 	}
+	public Long getFirstItemId() {	
+		Long result = 0l;
 	
+		for(Item item: orderItems) {
+			result = item.getId();
+			break;
+		}
+		
+		return result;
+	}
 	public void setOrderItems(List<Item> items) {
 		this.orderItems = items;
 	}
