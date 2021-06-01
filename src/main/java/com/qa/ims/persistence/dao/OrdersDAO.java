@@ -81,20 +81,19 @@ public class OrdersDAO implements Dao<Orders> {
 
 	@Override
 	public Orders create(Orders order) {
-		try (Connection connection = DBUtils.getInstance().getConnection();
-				PreparedStatement statement = connection
-						.prepareStatement("INSERT INTO orders(fk_customer_id) VALUES(?)");) {
+		try (Connection connection = DBUtils.getInstance().getConnection();) {
+			PreparedStatement statement;
+			statement = connection.prepareStatement("INSERT INTO orders(fk_customer_id) VALUES(?)");
 			statement.setLong(1, order.getCustomerId());
 			statement.executeUpdate();
-			Orders latestOrder = readLatest();
-			try (PreparedStatement itemStatement = connection
-					.prepareStatement("INSERT INTO order_items(fk_order_id, fk_item_id) VALUES (?,?)");) {
-				itemStatement.setLong(1, latestOrder.getId());
-				itemStatement.setLong(2, order.getFirstItemId());
-				itemStatement.executeUpdate();
-			}
-			return latestOrder;
 
+			Orders latestOrder = readLatest();
+			statement = connection.prepareStatement("INSERT INTO order_items(fk_order_id, fk_item_id) VALUES (?,?)");
+			statement.setLong(1, latestOrder.getId());
+			statement.setLong(2, order.getFirstItemId());
+			statement.executeUpdate();
+
+			return latestOrder;
 		} catch (Exception e) {
 			LOGGER.debug(e);
 			LOGGER.error(e.getMessage());
