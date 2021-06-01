@@ -69,11 +69,11 @@ public class OrdersDAO implements Dao<Orders> {
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery("SELECT * FROM orders ORDER BY id DESC LIMIT 1");) {
-			//resultSet.next();
-			//Long newOrderID = resultSet.getLong("id");
+			resultSet.next();
+			Long newOrderID = resultSet.getLong("id");
 
-			//return new Orders(newOrderID, new ArrayList<>());
-			return modelFromResultSet(resultSet);
+			return new Orders(newOrderID, new ArrayList<>());
+		
 		} catch (Exception e) {
 			LOGGER.debug(e);
 			LOGGER.error(e.getMessage());
