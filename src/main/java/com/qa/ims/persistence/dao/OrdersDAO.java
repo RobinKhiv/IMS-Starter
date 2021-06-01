@@ -132,7 +132,14 @@ public class OrdersDAO implements Dao<Orders> {
 
 	@Override
 	public int delete(long id) {
-		// TODO Auto-generated method stub
+		try (Connection connection = DBUtils.getInstance().getConnection();
+				PreparedStatement statement = connection.prepareStatement("DELETE FROM order_items WHERE fk_order_id = ?");){
+			statement.setLong(1, id);
+			return statement.executeUpdate();
+		} catch (Exception e) {
+			LOGGER.debug(e);
+			LOGGER.error(e.getMessage());
+		}
 		return 0;
 	}
 
