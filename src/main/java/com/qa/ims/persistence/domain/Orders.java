@@ -24,7 +24,9 @@ public class Orders {
 		this(orderId, 0l, items);
 	}
 	public Orders(Long orderId, Long addId, Long removeId) {
-		this(orderId, addId);
+		this(orderId, new ArrayList<Item>());
+		if(addId != 0l)
+			this.addItem(new Item(addId));
 		this.itemToRemove = removeId;
 	}
 	public Orders(Long id, Long customerId, List<Item> items) {
@@ -69,7 +71,9 @@ public class Orders {
 	public Long getCustomerId() {
 		return customerId;
 	}
-	
+	public boolean hasItem() {
+		return !orderItems.isEmpty();
+	}
 	public void setCustomerId(Long customerId) {
 		this.customerId = customerId;
 	}

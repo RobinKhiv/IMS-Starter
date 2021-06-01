@@ -47,7 +47,7 @@ public class OrdersController implements CrudController<Orders> {
 	public Orders update() {
 		LOGGER.info("Please Enter the Order ID you want to update");
 		Long id = utils.getLong();
-		
+		LOGGER.info("id " + id);
 		LOGGER.info("Please Enter the Item ID you want to remove from order " + id);
 		LOGGER.info("Enter 0 if you do now want to remove an item");
 		Long removeId = utils.getLong();
