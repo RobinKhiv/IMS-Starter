@@ -62,7 +62,6 @@ public class OrdersDAO implements Dao<Orders> {
 			LOGGER.debug(e);
 			LOGGER.error(e.getMessage());
 		}
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -70,10 +69,11 @@ public class OrdersDAO implements Dao<Orders> {
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				Statement statement = connection.createStatement();
 				ResultSet resultSet = statement.executeQuery("SELECT * FROM orders ORDER BY id DESC LIMIT 1");) {
-			resultSet.next();
-			Long newOrderID = resultSet.getLong("id");
+			//resultSet.next();
+			//Long newOrderID = resultSet.getLong("id");
 
-			return new Orders(newOrderID, new ArrayList<>());
+			//return new Orders(newOrderID, new ArrayList<>());
+			return modelFromResultSet(resultSet);
 		} catch (Exception e) {
 			LOGGER.debug(e);
 			LOGGER.error(e.getMessage());
@@ -158,7 +158,10 @@ public class OrdersDAO implements Dao<Orders> {
 			currentOrder = resultSet.getLong("order_id");
 			item_name = resultSet.getString("item_name");
 			item_price = resultSet.getDouble("item_price");
-
+			if(resultSet.wasNull()) {
+				currentOrder = resultSet.getLong("id");
+				return new Orders(currentOrder, new ArrayList<>());
+			}
 			if (currentOrderSaved == 0l)
 				currentOrderSaved = currentOrder;
 
