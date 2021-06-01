@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Orders {
-	
+
 	private Long orderId;
 	private Long customerId;
 	private List<Item> orderItems;
+	private Long itemToRemove;
 	
 	public Orders() {
 		this(0l);
@@ -21,6 +22,10 @@ public class Orders {
 	}
 	public Orders(Long orderId, List<Item> items) {
 		this(orderId, 0l, items);
+	}
+	public Orders(Long orderId, Long addId, Long removeId) {
+		this(orderId, addId);
+		this.itemToRemove = removeId;
 	}
 	public Orders(Long id, Long customerId, List<Item> items) {
 		this.setId(id);
@@ -69,6 +74,12 @@ public class Orders {
 		this.customerId = customerId;
 	}
 	
+	public Long getItemToRemove() {
+		return itemToRemove;
+	}
+	public void setItemToRemove(Long itemToRemove) {
+		this.itemToRemove = itemToRemove;
+	}
 	@Override
 	public String toString() {
 		String itemList = "[ ";
