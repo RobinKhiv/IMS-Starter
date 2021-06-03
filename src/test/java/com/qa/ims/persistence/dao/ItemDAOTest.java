@@ -30,7 +30,8 @@ public class ItemDAOTest {
 
 	@Test
 	public void testRead() {
-		
+		final long ID = 1L;
+		assertEquals(new Item(ID, "test_item", 10.00d), DAO.read(ID));
 	}
 	
 	@Test
@@ -41,11 +42,12 @@ public class ItemDAOTest {
 
 	@Test
 	public void testUpdate() {
-		
+		final Item updated = new Item(1L, "item update", 10.25);
+		assertEquals(updated, DAO.update(updated));
 	}
 
 	@Test
 	public void testDelete() {
-
+		assertEquals(1, DAO.delete(1));
 	}
 }
