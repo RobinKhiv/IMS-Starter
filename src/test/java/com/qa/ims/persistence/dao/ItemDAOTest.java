@@ -2,6 +2,9 @@ package com.qa.ims.persistence.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +23,9 @@ public class ItemDAOTest {
 	
 	@Test
 	public void testReadAll() {
-		
+		List<Item> expected = new ArrayList<>();
+		expected.add(new Item(1L, "test_item", 10.00d));
+		assertEquals(expected, DAO.readAll());
 	}
 
 	@Test
@@ -30,7 +35,7 @@ public class ItemDAOTest {
 	
 	@Test
 	public void testCreate() {
-		final Item created = new Item(1l, "test item", 10.00d);
+		final Item created = new Item(2l, "test item", 10.00d);
 		assertEquals(created, DAO.create(created));
 	}
 
