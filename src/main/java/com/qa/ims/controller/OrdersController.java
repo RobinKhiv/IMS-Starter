@@ -40,6 +40,7 @@ public class OrdersController implements CrudController<Orders> {
 		Long itemId = utils.getLong();
 
 		Orders order = ordersDAO.create(new Orders(id, itemId));
+		LOGGER.info("Order " + id + " created with item " + itemId);
 		return order;
 	}
 
@@ -47,6 +48,7 @@ public class OrdersController implements CrudController<Orders> {
 	public Orders update() {
 		LOGGER.info("Please Enter the Order ID you want to update");
 		Long id = utils.getLong();
+		
 		LOGGER.info("id " + id);
 		LOGGER.info("Please Enter the Item ID you want to remove from order " + id);
 		LOGGER.info("Enter 0 if you do now want to remove an item");
@@ -57,6 +59,7 @@ public class OrdersController implements CrudController<Orders> {
 		Long addId = utils.getLong();
 		
 		Orders orders = ordersDAO.update(new Orders(id, addId, removeId));
+		LOGGER.info("Order " + id + " updated");
 		return orders;
 	}
 
@@ -64,7 +67,7 @@ public class OrdersController implements CrudController<Orders> {
 	public int delete() {
 		LOGGER.info("Please Enter the OrderID you want to delete");
 		Long id = utils.getLong();
-		
+		LOGGER.info("Order " + id + " deleted");
 		return ordersDAO.delete(id);
 	}
 
