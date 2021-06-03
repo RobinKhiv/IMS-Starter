@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.qa.ims.controller.ItemController;
 import com.qa.ims.persistence.dao.ItemDAO;
-import com.qa.ims.persistence.domain.Customer;
 import com.qa.ims.persistence.domain.Item;
 import com.qa.ims.utils.Utils;
 
@@ -29,7 +28,8 @@ public class ItemControllerTest {
 	@Mock
 	private Utils utils;
 	
-	@Mock ItemDAO itemDAO;
+	@Mock 
+	private ItemDAO itemDAO;
 	
 	@InjectMocks
 	private ItemController controller;
