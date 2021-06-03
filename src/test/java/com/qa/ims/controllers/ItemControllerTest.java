@@ -1,8 +1,11 @@
 package com.qa.ims.controllers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,7 +41,14 @@ public class ItemControllerTest {
 	
 	@Test
 	public void readAllTest() {
-		
+		List<Item> items = new ArrayList<>();
+		items.add(new Item("keyboard", 10.25d));
+
+		Mockito.when(itemDAO.readAll()).thenReturn(items);
+
+		assertEquals(items, controller.readAll());
+
+		Mockito.verify(itemDAO, Mockito.times(1)).readAll();
 	}
 
 	@Test
