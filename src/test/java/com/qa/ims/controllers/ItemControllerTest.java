@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.qa.ims.controller.ItemController;
 import com.qa.ims.persistence.dao.ItemDAO;
+import com.qa.ims.persistence.domain.Customer;
 import com.qa.ims.persistence.domain.Item;
 import com.qa.ims.utils.Utils;
 
@@ -69,11 +70,31 @@ public class ItemControllerTest {
 
 	@Test
 	public void updateTest() {
-		
+		Item updated = new Item(1L, "keyboard", 10.00);
+
+		Mockito.when(utils.getLong()).thenReturn(1L);
+		Mockito.when(utils.getString()).thenReturn(updated.getItemName());
+		Mockito.when(utils.getDouble()).thenReturn(updated.getItemPrice());
+		Mockito.when(itemDAO.update(updated)).thenReturn(updated);
+
+		assertEquals(updated, controller.update());
+
+		Mockito.verify(utils, Mockito.times(1)).getLong();
+		Mockito.verify(utils, Mockito.times(1)).getString();
+		Mockito.verify(utils, Mockito.times(1)).getDouble();
+		Mockito.verify(itemDAO, Mockito.times(1)).update(updated);
 	}
 
 	@Test
 	public void deleteTest() {
-		
+		final long ID = 1L;
+
+		Mockito.when(utils.getLong()).thenReturn(ID);
+		Mockito.when(itemDAO.delete(ID)).thenReturn(1);
+
+		assertEquals(1L, controller.delete());
+
+		Mockito.verify(utils, Mockito.times(1)).getLong();
+		Mockito.verify(itemDAO, Mockito.times(1)).delete(ID);
 	}
 }
