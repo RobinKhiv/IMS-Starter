@@ -11,7 +11,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.qa.ims.persistence.domain.Customer;
 import com.qa.ims.persistence.domain.Item;
 import com.qa.ims.persistence.domain.Orders;
 import com.qa.ims.utils.DBUtils;
@@ -50,12 +49,12 @@ public class OrdersDAO implements Dao<Orders> {
 	public Orders read(Long id) {
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				PreparedStatement statement = connection.prepareStatement("Select * from "
-						+ "(SELECT order_item.fk_order_id AS order_id, order_items.fk_item_id AS item_id, item.item_name, item.item_price "
-						+ "FROM order_items WHERE id = ? " + "JOIN item " + "ON order_items.fk_item_id = item.id) AS o "
-						+ "JOIN orders ON o.order_id = orders.id");) {
+						+ "(SELECT order_items.fk_order_id AS order_id, order_items.fk_item_id AS item_id, item.item_name, item.item_price "
+						+ "FROM order_items JOIN item ON order_items.fk_item_id = item.id) "
+						+ "AS o JOIN orders ON o.order_id = orders.id WHERE order_id = ? ");) {
 			statement.setLong(1, id);
 			ResultSet resultSet = statement.executeQuery();
-
+			System.out.println(resultSet);
 			return modelFromResultSet(resultSet);
 
 		} catch (Exception e) {
@@ -71,8 +70,8 @@ public class OrdersDAO implements Dao<Orders> {
 				ResultSet resultSet = statement.executeQuery("SELECT * FROM orders ORDER BY id DESC LIMIT 1");) {
 			resultSet.next();
 			Long newOrderID = resultSet.getLong("id");
-
-			return new Orders(newOrderID, new ArrayList<>());
+			Long customerID = resultSet.getLong("fk_customer_id");
+			return new Orders(newOrderID, customerID, new ArrayList<>());
 		
 		} catch (Exception e) {
 			LOGGER.debug(e);
@@ -90,11 +89,13 @@ public class OrdersDAO implements Dao<Orders> {
 			statement.executeUpdate();
 
 			Orders latestOrder = readLatest();
+			Item item = new Item(order.getFirstItemId());
+			latestOrder.addItem(item);
 			statement = connection.prepareStatement("INSERT INTO order_items(fk_order_id, fk_item_id) VALUES (?,?)");
 			statement.setLong(1, latestOrder.getId());
-			statement.setLong(2, order.getFirstItemId());
+			statement.setLong(2, latestOrder.getFirstItemId());
 			statement.executeUpdate();
-
+			
 			return latestOrder;
 		} catch (Exception e) {
 			LOGGER.debug(e);
@@ -125,6 +126,7 @@ public class OrdersDAO implements Dao<Orders> {
 				statement.executeUpdate();
 				LOGGER.info("Deleted ItemID " + order.getId() + " from Order " + order.getItemToRemove());
 			}
+			return read(order.getId());
 		} catch (Exception e) {
 			LOGGER.debug(e);
 			LOGGER.error(e.getMessage());
