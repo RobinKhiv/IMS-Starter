@@ -158,8 +158,19 @@ public class Orders {
 		if (orderItems == null) {
 			if (other.orderItems != null)
 				return false;
-		} else if (!orderItems.equals(other.orderItems))
-			return false;
+		} else if (!orderItems.equals(other.orderItems)) {
+			List<Item> currentItems = orderItems;
+			List<Item> otherItems = other.getOrderItems();
+			if(currentItems.size() != otherItems.size()) {
+				return false;
+			}
+			for(int i = 0; i < currentItems.size(); i++) {
+				if(!(currentItems.get(i).getItemName().equals(otherItems.get(i).getItemName()))) {
+					return false;
+				}
+			}
+			
+		}
 		return true;
 	}
 }
