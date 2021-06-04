@@ -1,4 +1,4 @@
-Coverage: 70.2%
+Coverage: 69%
 # Inventory Management System
 
 IMS project that will interact through CRUD(create, read, update, delete) services on a MySQL database.
